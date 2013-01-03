@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head>
+    <title>{% block title %}PathJoy{% endblock %}</title>
+    <link rel='stylesheet' href='{% static 'bootstrap/css/bootstrap-responsive.min.css' %}' />
+    <link rel='stylesheet' href='{% static 'bootstrap/css/bootstrap.css' %}' />
+    <link rel='stylesheet' href='{% static 'css/main.css' %}' />
+    <link rel="apple-touch-icon" href="">
+
+    {% block extra_head %}{% endblock %}
+
+    <meta name="title" content="" />
+    <meta name="description" content="" />
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <meta name="google-site-verification" content="" />
+
+    <meta property="fb:admins" content="" />
+    <meta property="og:site_name" content="" />
+    <meta property="og:title" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="" />
+    <meta property="og:image" content="" />
+    <meta property="fb:page_id" content="" />
+
+  </head>
+  <body>
+    {% block content %}{% endblock %}
+  </body>
+</html>

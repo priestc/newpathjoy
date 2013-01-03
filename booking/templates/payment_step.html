@@ -1,0 +1,68 @@
+{% extends "step_base.html" %}
+
+{% block more_extra_head %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+<script type="text/javascript">
+    Stripe.setPublishableKey('pk_test_mZhdsPMHF0vrtSyuPJYwjepp');
+</script>
+{% endblock %}
+
+{% block step_content %}
+    <h1>Step {{ step }}</h1>
+    <div class="errorlist"></div>
+    <form method="POST" id="payment-form">
+        {% csrf_token %}
+        <div class="form-row">
+            <label>Card Number</label>
+            <input type="text" size="20" autocomplete="off" class="card-number"/>
+        </div>
+        <div class="form-row">
+            <label>CVC</label>
+            <input type="text" size="4" autocomplete="off" class="card-cvc"/>
+        </div>
+        <div class="form-row">
+            <label>Expiration (MM/YYYY)</label>
+            <input type="text" size="2" class="card-expiry-month"/>
+            <span> / </span>
+            <input type="text" size="4" class="card-expiry-year"/>
+        </div>
+        <button type="submit" class="submit-button btn btn-success">Submit Payment</button>
+    </form>
+    <script>
+        $(document).ready(function() {
+            $("#payment-form").submit(function(event) {
+                // disable the submit button to prevent repeated clicks
+                $('.submit-button').attr("disabled", "disabled");
+
+                Stripe.createToken({
+                    number: $('.card-number').val(),
+                    cvc: $('.card-cvc').val(),
+                    exp_month: $('.card-expiry-month').val(),
+                    exp_year: $('.card-expiry-year').val()
+                }, stripeResponseHandler);
+
+                // prevent the form from submitting with the default action
+                return false;
+            });
+        });
+
+        function stripeResponseHandler(status, response) {
+            if (response.error) {
+                // show the errors on the form
+                $(".errorlist").text(response.error.message);
+                $(".submit-button").removeAttr("disabled");
+                console.log('error');
+            } else {
+                console.log('got response');
+                var form = $("#payment-form");
+                // token contains id, last4, and card type
+                var token = response['id'];
+                // insert the token into the form so it gets submitted to the server
+                form.append("<input type='hidden' name='stripe_token' value='" + token + "'/>");
+                // and submit
+                form.get(0).submit();
+            }
+        }
+    </script>
+{% endblock %}

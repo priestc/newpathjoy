@@ -1,0 +1,32 @@
+{% extends "step_base.html" %}
+
+{% block step_content %}
+    <h1>Step {{ step }}</h1>
+    <form method="post">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" class="btn btn-large btn-success" value="Next">
+    </form>
+    {% if step == 6 %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script>
+        $('#id_cleaning_datetime').css('display', 'none');
+        $('#id_cleaning_datetime').parent().append($('<select id="date_selection">'));
+        $.get('{% url available_times %}').done(function(response) {
+            var opt, time;
+            for(i in response) {
+                time = response[i];
+                formatted_time = time; //todo later
+                opt = $('<option>').attr('value', time).text(formatted_time);
+                $('#date_selection').append(opt);
+            }
+            $('#date_selection').change(function() {
+                var selection = $(this).val();
+                $('#id_cleaning_datetime').val(selection);
+            });
+        });
+    </script>
+    {% endif %}
+{% endblock %}
